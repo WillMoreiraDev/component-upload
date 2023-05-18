@@ -117,12 +117,7 @@ export const UploadComponent: React.FC = () => {
           <div className="icon">
             <img src={IconUpload} alt="" />
           </div>
-          <p>
-            {" "}
-            {isDragActive
-              ? "Release the files to upload."
-              : "Drag and drop the files here in this area or click to upload."}
-          </p>
+          <p>Drag and drop the files here in this area or click to upload.</p>
         </BoxUpload>
         {!uploadComplete &&
           loadingFiles.map((fileName) => (

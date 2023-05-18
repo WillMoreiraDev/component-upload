@@ -79,12 +79,12 @@ export const BoxPreview = styled.div`
   flex-direction: column;
   margin-top: 2rem;
   .list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     align-items: flex-start;
     grid-gap: 2.4rem;
     height: 100%;
     width: 100%;
+    flex-wrap: wrap;
   }
 `;
 

@@ -1,7 +1,5 @@
 import { styled } from "styled-components";
 
-import Checked from "../../assets/checked.svg";
-
 export const ContainerUpload = styled.div`
   display: flex;
   align-items: center;
@@ -9,7 +7,7 @@ export const ContainerUpload = styled.div`
   width: 100%;
   height: 100vh;
   .content {
-    max-width: 37.8rem;
+    max-width: 38.8rem;
     width: 100%;
   }
   .error {
@@ -27,14 +25,27 @@ export const ContainerUpload = styled.div`
     margin-top: 2.4rem;
     display: flex;
     gap: 1.2rem;
+    .btn-skip {
+      padding: 1rem 1.7rem;
+      font-weight: 700;
+      font-size: 1.6rem;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: #585858;
+      cursor: pointer;
+    }
     .btn-confirm {
-      padding: 0.8rem 3.2rem;
+      padding: 1rem 1.7rem;
       background-color: #2e7a5d;
       font-weight: 700;
       font-size: 1.6rem;
       letter-spacing: 0.04em;
       color: #ffffff;
       cursor: pointer;
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
     }
   }
 `;
@@ -151,82 +162,5 @@ export const CardPreviewDoc = styled.div`
     align-items: center;
     justify-content: center;
     cursor: pointer;
-  }
-`;
-
-export const AreaSuccessFiles = styled.div`
-  h5 {
-    font-weight: 700;
-    font-size: 1.8rem;
-    line-height: 160%;
-    letter-spacing: 0.04em;
-    color: #000000;
-    margin-bottom: 2.4rem;
-  }
-  p {
-    font-weight: 400;
-    font-size: 1.6rem;
-    line-height: 140%;
-    letter-spacing: 0.04em;
-    color: #585858;
-  }
-  .all-docs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 24px 29px;
-    margin-top: 2.4rem;
-    margin-bottom: 6.4rem;
-    max-width: 36.8rem;
-  }
-
-  .msg-preview {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-top: 1rem;
-    .icon {
-      width: 2.2rem;
-      height: 2.2rem;
-      background: url(${Checked}) no-repeat var(--secondary-02) center center;
-      border-radius: 50%;
-    }
-    span {
-      font-weight: 400;
-      font-size: 1.3rem;
-      line-height: 160%;
-      letter-spacing: 0.04em;
-      color: #585858;
-      margin-left: 0.6rem;
-    }
-  }
-
-  .btn-add-another {
-    cursor: pointer;
-    padding: 0 2rem;
-    font-weight: 400;
-    font-size: 1.2rem;
-    letter-spacing: 0.04em;
-    color: #585858;
-    height: 3.8rem;
-    transition: background-color 0.3s;
-    &:hover {
-      background-color: #c4c4c4;
-    }
-  }
-  .btn-next {
-    display: flex;
-    align-items: center;
-    padding: 0 3.2rem;
-    line-height: 3.8rem;
-    font-weight: 700;
-    font-size: 1.6rem;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    background-color: #2e7a5d;
-    color: white;
-    transition: background-color 0.3s;
-    &:hover {
-      background-color: #4da977;
-    }
   }
 `;

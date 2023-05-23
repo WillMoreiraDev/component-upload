@@ -13,6 +13,7 @@ function App() {
         typeDoc="address"
         limitUpload={5}
         onReturn={saveDocuments}
+        onSkip={() => console.log("Pular etapa")}
       />
     </>
   );

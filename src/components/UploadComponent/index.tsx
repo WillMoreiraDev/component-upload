@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
-  AreaSuccessFiles,
   BoxPreview,
   BoxUpload,
   CardPreviewDoc,
@@ -18,12 +17,23 @@ interface UploadProps {
   typeDoc: string;
   limitUpload: number;
   onReturn: () => void;
+  onSkip?: () => void;
+}
+
+interface FileProps {
+  name: string;
+  file: string;
+  mime: string;
+  size: number;
+  ref: string;
+  type: string;
 }
 
 export const UploadComponent = ({
   typeDoc,
   limitUpload,
   onReturn,
+  onSkip,
 }: UploadProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [loadingFiles, setLoadingFiles] = useState<string[]>([]);
@@ -31,8 +41,6 @@ export const UploadComponent = ({
   const [formatErrorMessage, setFormatErrorMessage] = useState<string>("");
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
-
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (files.length + acceptedFiles.length > limitUpload) {
@@ -162,10 +170,13 @@ export const UploadComponent = ({
         };
       });
 
-      console.log(fileInfo);
+      localStorage.setItem(
+        "@peoplecheck.candidate",
+        JSON.stringify({ documents: fileInfo })
+      );
       console.log(contentFileData);
 
-      setIsSuccess(true);
+      onReturn();
     } catch (error) {
       console.error(error);
     }
@@ -177,124 +188,89 @@ export const UploadComponent = ({
     onDragLeave: () => setIsDragActive(false),
   });
 
+  useEffect(() => {
+    const candidate = JSON.parse(
+      localStorage.getItem("@peoplecheck.candidate") || "null"
+    );
+
+    const removeThisObjArray = candidate?.documents.filter(
+      (obj: FileProps) => obj.type !== typeDoc
+    );
+
+    localStorage.setItem(
+      "@peoplecheck.candidate",
+      JSON.stringify({ documents: removeThisObjArray })
+    );
+  }, []);
+
   return (
     <ContainerUpload>
       <div className="content">
-        {!isSuccess ? (
-          <div>
-            <BoxUpload
-              {...getRootProps()}
-              className={`${isDragActive ? "drag-active" : ""}${
-                files.length === limitUpload ? "disabled" : ""
-              }`}
-            >
-              <input {...getInputProps()} />
-              <div className="icon">
-                <img src={IconUpload} alt="" />
-              </div>
-              <p>
-                Drag and drop the files here in this area or click to upload.
-              </p>
-            </BoxUpload>
-            {!uploadComplete &&
-              loadingFiles.map((fileName) => (
-                <div key={fileName}>
-                  <Loading />
-                </div>
-              ))}
-            {files.length > 0 && (
-              <BoxPreview>
-                <div className="list">
-                  {files.map((file) => (
-                    <CardPreviewDoc key={file.name}>
-                      {file.type === "application/pdf" ? (
-                        <div>
-                          <iframe
-                            src={URL.createObjectURL(file)}
-                            title={file.name}
-                          ></iframe>
-                          <span>{file.name}</span>
-                        </div>
-                      ) : (
-                        <div>
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={file.name}
-                          />
-                          <span>{file.name}</span>
-                        </div>
-                      )}
-                      <button
-                        onClick={() => removeFile(file)}
-                        className="btn-remove"
-                      >
-                        <img src={IconRemove} />
-                      </button>
-                    </CardPreviewDoc>
-                  ))}
-                </div>
-              </BoxPreview>
-            )}
-            {sizeErrorMessage && (
-              <div className="error">{sizeErrorMessage}</div>
-            )}
-            {formatErrorMessage && (
-              <div className="error">{formatErrorMessage}</div>
-            )}
-            {uploadComplete && (
-              <div className="actions">
-                {files.length > 0 && (
-                  <button className="btn-confirm" onClick={handleSendFiles}>
-                    Confirm documents
-                  </button>
-                )}
-              </div>
-            )}
+        <BoxUpload
+          {...getRootProps()}
+          className={`${isDragActive ? "drag-active" : ""}${
+            files.length === limitUpload ? "disabled" : ""
+          }`}
+        >
+          <input {...getInputProps()} />
+          <div className="icon">
+            <img src={IconUpload} alt="" />
           </div>
-        ) : (
-          <AreaSuccessFiles>
-            <h5>Supporting document</h5>
-            <p>Your documents have been successfully uploaded</p>
-            <div className="all-docs">
+          <p>Drag and drop the files here in this area or click to upload.</p>
+        </BoxUpload>
+        {!uploadComplete &&
+          loadingFiles.map((fileName) => (
+            <div key={fileName}>
+              <Loading />
+            </div>
+          ))}
+        {files.length > 0 && (
+          <BoxPreview>
+            <div className="list">
               {files.map((file) => (
-                <div key={file.name}>
-                  <CardPreviewDoc>
-                    {file.type === "application/pdf" ? (
-                      <div>
-                        <iframe
-                          src={URL.createObjectURL(file)}
-                          title={file.name}
-                        ></iframe>
-                        <span>{file.name}</span>
-                      </div>
-                    ) : (
-                      <div>
-                        <img src={URL.createObjectURL(file)} alt={file.name} />
-                        <span>{file.name}</span>
-                      </div>
-                    )}
-                  </CardPreviewDoc>
-                  <div className="msg-preview">
-                    <div className="icon"></div>
-                    <span>Preview</span>
-                  </div>
-                </div>
+                <CardPreviewDoc key={file.name}>
+                  {file.type === "application/pdf" ? (
+                    <div>
+                      <iframe
+                        src={URL.createObjectURL(file)}
+                        title={file.name}
+                      ></iframe>
+                      <span>{file.name}</span>
+                    </div>
+                  ) : (
+                    <div>
+                      <img src={URL.createObjectURL(file)} alt={file.name} />
+                      <span>{file.name}</span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => removeFile(file)}
+                    className="btn-remove"
+                  >
+                    <img src={IconRemove} />
+                  </button>
+                </CardPreviewDoc>
               ))}
             </div>
-            <div className="actions">
-              <button
-                className="btn-add-another"
-                onClick={() => setIsSuccess(false)}
-              >
-                Review documents
-              </button>
-
-              <button className="btn-next" onClick={onReturn}>
-                Next
-              </button>
-            </div>
-          </AreaSuccessFiles>
+          </BoxPreview>
         )}
+        {sizeErrorMessage && <div className="error">{sizeErrorMessage}</div>}
+        {formatErrorMessage && (
+          <div className="error">{formatErrorMessage}</div>
+        )}
+        <div className="actions">
+          {files.length === 0 && onSkip && (
+            <button onClick={onSkip} className="btn-skip">
+              Skip to next step
+            </button>
+          )}
+          <button
+            className={`btn-confirm ${files.length === 0 ? "disabled" : ""}`}
+            onClick={handleSendFiles}
+          >
+            Confirm documents
+          </button>
+        </div>
       </div>
     </ContainerUpload>
   );

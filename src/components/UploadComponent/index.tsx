@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   BoxPreview,
@@ -18,15 +18,6 @@ interface UploadProps {
   limitUpload: number;
   onReturn: () => void;
   onSkip?: () => void;
-}
-
-interface FileProps {
-  name: string;
-  file: string;
-  mime: string;
-  size: number;
-  ref: string;
-  type: string;
 }
 
 export const UploadComponent = ({
@@ -187,25 +178,6 @@ export const UploadComponent = ({
     onDragEnter: () => setIsDragActive(true),
     onDragLeave: () => setIsDragActive(false),
   });
-
-  useEffect(() => {
-    if (window !== undefined) {
-      const candidate = JSON.parse(
-        localStorage.getItem("@peoplecheck.candidate") || "null"
-      );
-
-      if (candidate) {
-        const removeThisObjArray = candidate?.documents.filter(
-          (obj: FileProps) => obj.type !== typeDoc
-        );
-
-        localStorage.setItem(
-          "@peoplecheck.candidate",
-          JSON.stringify({ documents: removeThisObjArray })
-        );
-      }
-    }
-  }, []);
 
   return (
     <ContainerUpload>

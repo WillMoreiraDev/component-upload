@@ -193,14 +193,16 @@ export const UploadComponent = ({
       localStorage.getItem("@peoplecheck.candidate") || "null"
     );
 
-    const removeThisObjArray = candidate?.documents.filter(
-      (obj: FileProps) => obj.type !== typeDoc
-    );
+    if (candidate) {
+      const removeThisObjArray = candidate?.documents.filter(
+        (obj: FileProps) => obj.type !== typeDoc
+      );
 
-    localStorage.setItem(
-      "@peoplecheck.candidate",
-      JSON.stringify({ documents: removeThisObjArray })
-    );
+      localStorage.setItem(
+        "@peoplecheck.candidate",
+        JSON.stringify({ documents: removeThisObjArray })
+      );
+    }
   }, []);
 
   return (

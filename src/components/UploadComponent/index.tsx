@@ -189,19 +189,21 @@ export const UploadComponent = ({
   });
 
   useEffect(() => {
-    const candidate = JSON.parse(
-      localStorage.getItem("@peoplecheck.candidate") || "null"
-    );
-
-    if (candidate) {
-      const removeThisObjArray = candidate?.documents.filter(
-        (obj: FileProps) => obj.type !== typeDoc
+    if (window !== undefined) {
+      const candidate = JSON.parse(
+        localStorage.getItem("@peoplecheck.candidate") || "null"
       );
 
-      localStorage.setItem(
-        "@peoplecheck.candidate",
-        JSON.stringify({ documents: removeThisObjArray })
-      );
+      if (candidate) {
+        const removeThisObjArray = candidate?.documents.filter(
+          (obj: FileProps) => obj.type !== typeDoc
+        );
+
+        localStorage.setItem(
+          "@peoplecheck.candidate",
+          JSON.stringify({ documents: removeThisObjArray })
+        );
+      }
     }
   }, []);
 
